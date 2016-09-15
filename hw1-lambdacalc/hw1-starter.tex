@@ -1,0 +1,71 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{comment}
+
+\usepackage{titlesec}
+\usepackage{amsmath}
+
+\pagestyle{fancy}
+\lhead{Your Name}
+\rhead{CS 421: Homework 1}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{comment}
+  \begin{align*}
+    (\lambda x . (\lambda y . x y) z)\ (\lambda x . x y)
+    \xrightarrow{\ \ \alpha\ \ }
+    (\lambda x . (\lambda a . x a) z)\ (\lambda x . x y)
+    \xrightarrow{\ \ \beta\ \ }
+    (\lambda a . (\lambda x . x y) a) z
+    \xrightarrow{\ \ \beta\ \ }
+    (\lambda x . x y) z
+    \xrightarrow{\ \ \beta\ \ }
+    z y
+  \end{align*}
+\end{comment}
+
+\begin{enumerate}
+\item $(\lambda x.x)\ y$
+
+\vfil
+\item $(\lambda x.y)\ x$
+
+
+\vfil
+\item $(\lambda x. x\ y)\ (\lambda y. y\ z)$
+
+
+\vfil
+\item $(\lambda x.x\ y)\ (\lambda a. a\ b)\ p$
+
+
+\vfil
+\item $(\lambda x.x\ y)\ (\lambda a. b\ a)\ p$
+
+
+\vfil
+\item $(\lambda x.(\lambda y.x\ y))\ y$
+
+
+\vfil
+\item $(\lambda x.y\ x)\ y$
+
+
+\vfil
+\item $(\lambda x. \lambda y. x\ y\ z)\ (\lambda x. x\ y)\ z$
+
+
+\vfil
+\item $(\lambda x.y\ x)\ x$
+
+
+\vfil
+\item $(\lambda y.y\ x)\ (\lambda z. z\ y)$
+
+\end{enumerate}
+\end{document}
+
+

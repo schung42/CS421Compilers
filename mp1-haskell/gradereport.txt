@@ -1,0 +1,312 @@
+==================================================================
+= Grade Report
+= Net ID: schung42
+==================================================================
+= Base Grade: 126
+= Point Adjustments: -26
+= Extra Credit Grade: 0
+==================================================================
+= Final Grade: 100
+==================================================================
+
+
+==================================================================
+= General Comments
+==================================================================
+
+
+==================================================================
+= Output
+==================================================================
+
+=== prop_mytake from Mp1Check.hs:12 ===
++++ OK, passed 100 tests.
+--
+=== prop_mydrop from Mp1Check.hs:15 ===
++++ OK, passed 100 tests.
+--
+=== prop_rev from Mp1Check.hs:18 ===
++++ OK, passed 100 tests.
+--
+=== prop_app from Mp1Check.hs:21 ===
++++ OK, passed 100 tests.
+--
+=== prop_add from Mp1Check.hs:24 ===
++++ OK, passed 100 tests.
+--
+=== prop_union from Mp1Check.hs:28 ===
++++ OK, passed 100 tests.
+--
+=== prop_intersect from Mp1Check.hs:33 ===
+*** Failed! Falsifiable (after 3 tests and 1 shrink): 
+--
+=== prop_powerset from Mp1Check.hs:38 ===
+*** Failed! Falsifiable (after 2 tests and 1 shrink): 
+--
+=== prop_inclist from Mp1Check.hs:42 ===
++++ OK, passed 100 tests.
+--
+=== prop_sumlist from Mp1Check.hs:45 ===
++++ OK, passed 100 tests.
+--
+=== prop_myzip from Mp1Check.hs:48 ===
++++ OK, passed 100 tests.
+--
+=== prop_addpairs from Mp1Check.hs:51 ===
++++ OK, passed 100 tests.
+--
+=== prop_ones from Mp1Check.hs:54 ===
++++ OK, passed 100 tests.
+--
+=== prop_nats from Mp1Check.hs:59 ===
++++ OK, passed 100 tests.
+--
+=== prop_fib from Mp1Check.hs:64 ===
++++ OK, passed 100 tests.
+--
+=== prop_listcons from Mp1Check.hs:72 ===
++++ OK, passed 100 tests.
+--
+=== prop_listcons' from Mp1Check.hs:75 ===
++++ OK, passed 100 tests.
+--
+=== prop_eval from Mp1Check.hs:78 ===
++++ OK, passed 100 tests.
+--
+=== prop_inclist' from Mp1Check.hs:82 ===
++++ OK, passed 100 tests.
+--
+=== prop_sumlist' from Mp1Check.hs:85 ===
++++ OK, passed 100 tests.
+--
+ -   > quickCheck prop_mytake
+ -}
+
+==================================================================
+= Comments
+==================================================================
+
+rev-no-++
+-----------
+
+**-0 points**
+
+You do not need to use `(++)` where `(:)` will do. This also helps avoid having
+to wrap a single element in `[]`.
+
+app-no-++
+-----------
+
+**-6 points**
+
+Using the builtin `(++)` defeats the purpose of writing your own.
+
+union-use-merge
+-----------
+
+**-0 points**
+
+If you used `add` to implement `union`, you may have gotten poor performance.
+Analyze the time complexity of your version and this version.
+
+```haskell
+union :: Ord a => [a] -> [a] -> [a]
+union xs [] = xs
+union [] ys = ys
+union (x:xs) (y:ys)
+    | x < y     = x : union xs (y:ys)
+    | x == y    = x : union xs ys
+    | x > y     = y : union (x:xs) ys
+```
+
+intersect-use-merge
+-----------
+
+**-0 points**
+
+`intersect` can be implemented with a "merge-like" behavior that's very
+efficient. Compare your time complexity to this one:
+
+```haskell
+intersect :: Ord a => [a] -> [a] -> [a]
+intersect xs [] = []
+intersect [] ys = []
+intersect (x:xs) (y:ys)
+    | x < y     = intersect xs (y:ys)
+    | x == y    = x : intersect xs ys
+    | x > y     = intersect (x:xs) ys
+```
+
+powerset-use-union
+-----------
+
+**-0 points**
+
+`powerset` can use both `add` and `union` in its implementation. What are the
+benefits of using `add` and `union` over `(x:)` and `(++)`?
+
+```haskell
+powerset :: Ord a => [a] -> [[a]]
+powerset [] = [[]]
+powerset (x:xs) = powerset xs `union` map (add x) (powerset xs)
+```
+
+addpairs-use-myzip
+-----------
+
+**-4 points**
+
+The instructions say to use `myzip` for `addpairs`.
+
+eval-only-two
+-----------
+
+**-4 points**
+
+Your implementation of `eval` does not work on lists that are not exactly two
+elements long:
+
+
+==================================================================
+= Original Code
+==================================================================
+
+module Mp1 where
+
+data Cons a = Cons a (Cons a)
+            | Nil
+  deriving (Show,Eq)
+
+data Exp = IntExp Int
+         | PlusExp [Exp]
+         | MultExp [Exp]
+  deriving (Show,Eq)
+
+{-
+ - You'll want to go through and put in the type signatures first, if you want
+ - to check your work incrementally with quickCheck. (quickCheck is a way to
+ - create random tests to validate your work.)
+ -
+ - To use our quickChecks, you'll want to load up mp1check by going:
+ -   :l mp1check
+ -
+ - then for each property in mp1check, you'll want to test with:
+ -   > quickCheck PROP_NAME
+ -
+ - For example, to test mytake, you would run:
+ -   > quickCheck prop_mytake
+ -}
+
+mytake :: Int -> [Int] -> [Int]
+mytake n xx  
+    | n <= 0 = []
+    | length xx == 0 = []
+    | otherwise = head xx : mytake (n-1) (tail xx)
+
+mydrop :: Int -> [Int] -> [Int]
+mydrop n xx
+    | n <=0 = xx
+    | length xx == 0 = []
+    | otherwise = mydrop (n-1) (tail xx)
+
+rev :: [Int] -> [Int]
+rev [] = []
+rev (x:xs) = (rev xs) ++ [x]
+
+app :: [Int] -> [Int] -> [Int]
+app xx yy = xx ++ yy
+
+add :: Ord a => a -> [a] -> [a]
+add a [] = [a]
+add a (x:xs)
+    | a < x = a : x : xs
+    | a == x = x : xs
+    | otherwise = x : add a xs
+
+union :: Ord a => [a] -> [a] -> [a]
+union a [] = a
+union [] a = a
+union (a:as) b = add a (union as b)
+
+
+{--intersect :: Ord a => [a] -> [a] -> [a]
+intersect [] a = [] 
+intersect a [] = []
+intersect (a:as) (x:xs)
+    | temp == (x:xs) = intersect as xs
+    | otherwise = intersect as xs
+    where temp = add a xs--}
+intersect :: Ord a => [a] -> [a] -> [a]
+intersect [] a = [] 
+intersect a [] = []
+intersect (a:as) (x:xs)
+    | a == x = x : xs
+    | otherwise = intersect as xs
+
+powerset :: Ord a => [a] -> [[a]]
+powerset [] = [[]]
+powerset (x:xs) = powerset xs ++ [x| x<-powerset xs]
+--powerset (x:xs) = [ add x a| a<-powerset(xs)] ++ powerset xs
+
+
+inclist :: (Num a) => [a] -> [a]
+inclist [] = []
+inclist (x:xs) = (x + 1) : inclist xs
+
+
+sumlist :: (Num t) => [t] -> t
+sumlist [] = 0
+sumlist (x:xs) = x + sumlist xs
+
+myzip :: [t] -> [t1] -> [(t, t1)]
+myzip _ [] = []
+myzip [] _ = []
+myzip (x:xs) (y:ys) = (x,y) : myzip xs ys
+
+addpairs :: (Num a) => [a] -> [a] -> [a]
+addpairs a [] = []
+addpairs [] a = []
+addpairs (a:as) (b:bs) = a + b : addpairs as bs
+
+{--| do it with myzip here, you bum
+--}
+ones :: [Integer]
+ones = 1 : ones
+
+nats :: [Integer]
+--nats = temp 1
+--    where temp x = x : (x+1)
+nats = 1 : [ x + 1 | x <-nats]
+
+fib :: [Integer]
+fib = 1 : 1 : addpairs fib (tail fib)
+
+list2cons :: [a] -> Cons a
+list2cons [] = Nil
+list2cons (x:xs) = Cons x (list2cons xs) 
+
+cons2list :: Cons a -> [a]
+cons2list Nil = []
+cons2list (Cons a as) = a : cons2list (as)
+
+eval :: Exp -> Int
+eval (IntExp a) = a
+eval (PlusExp [a,b]) = (eval a) + (eval b)
+eval (MultExp [a,b]) = (eval a) * (eval b)
+
+{--|
+map does the same operation on the entire list. takes two parameters:
+(function) and (list you want to operate on)
+--}
+inclist' :: (Num a) => [a] -> [a]
+inclist' xx = map(\x -> (x+1)) xx
+
+{--|
+foldr takes two parameters (the function you want to apply recursively),
+the starting value (accumulator) and the (list you want to operate on)
+--}
+sumlist' :: (Num t) => [t] -> t
+sumlist' xx = foldr(+) 0 xx
+
+list2cons' :: [a] -> Cons a
+list2cons' xx = foldr(Cons) Nil xx
